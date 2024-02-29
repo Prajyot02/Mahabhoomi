@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.6.0;
+
+pragma solidity ^0.8.0;
 
 contract Land {
     address contractOwner;
 
-    constructor() public{
-        contractOwner = msg.sender;
+    constructor() {
+         contractOwner =  msg.sender;
     }
 
     struct Landreg {
@@ -174,10 +175,10 @@ contract Land {
 
 
     //-----------------------------------------------Land-----------------------------------------------
-    function addLand(uint _area, string memory _address, uint landPrice,string memory _allLatiLongi, uint _propertyPID,string memory _surveyNum, string memory _document) public {
+    function addLand(uint _area, string memory _address, uint landPriceInput,string memory _allLatiLongi, uint _propertyPID,string memory _surveyNum, string memory _document) public {
         require(isUserVerified(msg.sender));
         landsCount++;
-        lands[landsCount] = Landreg(landsCount, _area, _address, landPrice,_allLatiLongi,_propertyPID, _surveyNum , _document,false,msg.sender,false);
+        lands[landsCount] = Landreg(landsCount, _area, _address, landPriceInput,_allLatiLongi,_propertyPID, _surveyNum , _document,false,payable(msg.sender),false);
         MyLands[msg.sender].push(landsCount);
         allLandList[1].push(landsCount);
         // emit AddingLand(landsCount);
@@ -210,7 +211,7 @@ contract Land {
     {
         require(isUserVerified(msg.sender) && isLandVerified(_landId));
         requestCount++;
-        LandRequestMapping[requestCount]=LandRequest(requestCount,lands[_landId].ownerAddress,msg.sender,_landId,reqStatus.requested,false);
+        LandRequestMapping[requestCount]=LandRequest(requestCount,lands[_landId].ownerAddress,payable(msg.sender),_landId,reqStatus.requested,false);
         MyReceivedLandRequest[lands[_landId].ownerAddress].push(requestCount);
         MySentLandRequest[msg.sender].push(requestCount);
     }
@@ -245,7 +246,7 @@ contract Land {
     }
     function propertytax(uint id) public view returns(uint)
     {
-        return lands[id].landPrice*0.20;
+        return lands[id].landPrice*1/5;
     }
     function makePayment(uint _requestId) public payable
     {
